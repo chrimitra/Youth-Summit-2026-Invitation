@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You've Been Called · Youth Summit 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #1a1a1a;
+    --purple-mid: #444444;
+    --purple-light: #aaaaaa;
+    --gold: #ffffff;
+    --gold-light: #e0e0e0;
+    --dark: #0a0a0a;
+    --dark-2: #141414;
+    --text: #f5f5f5;
+    --text-muted: #aaaaaa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Lora', serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* STARS BACKGROUND */
+  .stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle var(--d) ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    from { opacity: 0.1; transform: scale(1); }
+    to { opacity: 0.9; transform: scale(1.4); }
+  }
+
+  /* SEAL / INTRO SCREEN */
+  #intro {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--dark);
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+
+  #intro.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .seal-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    animation: fadeUp 1.2s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .seal {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: rotateSeal 20s linear infinite;
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.15), inset 0 0 30px rgba(80, 80, 80, 0.3);
+  }
+
+  @keyframes rotateSeal {
+    from { box-shadow: 0 0 40px rgba(255,255,255,0.15), inset 0 0 30px rgba(80,80,80,0.3); }
+    50% { box-shadow: 0 0 60px rgba(255,255,255,0.25), inset 0 0 40px rgba(120,120,120,0.4); }
+    to { box-shadow: 0 0 40px rgba(255,255,255,0.15), inset 0 0 30px rgba(80,80,80,0.3); }
+  }
+
+  .seal-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+
+  .seal-inner {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    color: var(--gold);
+    z-index: 1;
+    text-shadow: 0 0 20px rgba(245,158,11,0.6);
+  }
+
+  .seal-ring {
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 1px dashed rgba(245,158,11,0.4);
+    animation: spin 30s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .intro-label {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.8;
+  }
+
+  .intro-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(18px, 4vw, 28px);
+    font-weight: 600;
+    text-align: center;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .open-btn {
+    margin-top: 8px;
+    padding: 14px 44px;
+    background: transparent;
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .open-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    z-index: -1;
+  }
+
+  .open-btn:hover {
+    color: var(--dark);
+  }
+
+  .open-btn:hover::before { transform: scaleX(1); }
+
+  /* MAIN CONTENT */
+  #main {
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 1s ease 0.3s;
+  }
+
+  #main.visible { opacity: 1; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(80,80,80,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    animation: revealFade 1s ease 0.2s both;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(36px, 8vw, 80px);
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 12px;
+    animation: revealFade 1s ease 0.4s both;
+  }
+
+  .hero-title .highlight {
+    background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-year {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(14px, 3vw, 22px);
+    letter-spacing: 8px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    animation: revealFade 1s ease 0.6s both;
+  }
+
+  .divider {
+    width: 80px;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, #ffffff, transparent);
+    margin: 0 auto 40px;
+    animation: revealFade 1s ease 0.8s both;
+  }
+
+  .hero-message {
+    max-width: 580px;
+    font-size: clamp(15px, 2.5vw, 18px);
+    line-height: 1.85;
+    color: var(--text-muted);
+    font-style: italic;
+    animation: revealFade 1s ease 1s both;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: revealFade 1s ease 1.4s both;
+  }
+
+  .scroll-hint span {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-family: 'Cinzel', serif;
+  }
+
+  .scroll-arrow {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  @keyframes revealFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTIONS */
+  .section {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+
+  /* CALLING SECTION */
+  .calling-section {
+    background: linear-gradient(135deg, rgba(40,40,40,0.5) 0%, rgba(15,15,15,0.8) 100%);
+    border: 1px solid rgba(200, 200, 200, 0.15);
+    border-radius: 4px;
+    padding: 60px 48px;
+    margin: 0 24px;
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .calling-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #888, #fff, #888, transparent);
+  }
+
+  .calling-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(20px, 4vw, 30px);
+    font-weight: 600;
+    margin-bottom: 28px;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .calling-body {
+    font-size: 16px;
+    line-height: 2;
+    color: var(--text-muted);
+  }
+
+  .calling-body p + p { margin-top: 20px; }
+
+  .calling-body strong { color: var(--text); font-style: normal; }
+
+  /* VERSE */
+  .verse-section {
+    text-align: center;
+    padding: 80px 24px;
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .verse-section::before {
+    content: '\201C';
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cinzel', serif;
+    font-size: 120px;
+    color: #333333;
+    opacity: 0.3;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .verse-text {
+    font-size: clamp(18px, 3.5vw, 24px);
+    font-style: italic;
+    line-height: 1.7;
+    color: var(--text);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 20px;
+  }
+
+  .verse-ref {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  /* WHAT AWAITS */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .info-card {
+    background: rgba(40,40,40,0.4);
+    border: 1px solid rgba(200,200,200,0.12);
+    border-radius: 4px;
+    padding: 24px 20px;
+    transition: all 0.3s ease;
+  }
+
+  .info-card:hover {
+    background: rgba(60,60,60,0.5);
+    border-color: rgba(255,255,255,0.3);
+    transform: translateY(-3px);
+  }
+
+  .info-card .icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .info-card .card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .info-card .card-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  /* CLOSING */
+  .closing {
+    text-align: center;
+    padding: 80px 24px 100px;
+    position: relative;
+  }
+
+  .closing::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(80,80,80,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .closing-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 5vw, 40px);
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text);
+    position: relative;
+    z-index: 1;
+  }
+
+  .closing-body {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--text-muted);
+    max-width: 500px;
+    margin: 0 auto 40px;
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+  }
+
+  .sig-block {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    position: relative;
+    z-index: 1;
+    line-height: 2;
+  }
+
+  .sig-name {
+    color: var(--gold);
+    font-size: 14px;
+  }
+
+  /* FOOTER LINE */
+  .footer-line {
+    border-top: 1px solid rgba(200,200,200,0.1);
+    text-align: center;
+    padding: 24px;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(196,181,212,0.4);
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- STARS -->
+<div class="stars" id="stars"></div>
+
+<!-- INTRO / SEAL SCREEN -->
+<div id="intro">
+  <div class="seal-wrapper">
+    <div class="intro-label">CYN SEE · JILSEEO Youth</div>
+    <div class="seal">
+      <div class="seal-ring"></div>
+      <div class="seal-inner">✦</div>
+    </div>
+    <div class="intro-title">You have received<br>an official message.</div>
+    <button class="open-btn" onclick="openMessage()">Open Message</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">CYN SEE · JILSEEO Youth Ministry</div>
+    <h1 class="hero-title">
+      You Have Been<br>
+      <span class="highlight">Called.</span>
+    </h1>
+    <div class="hero-year">Youth Summit · 2026</div>
+    <div class="divider"></div>
+    <p class="hero-message">
+      This is not a coincidence. This is not just an invitation.<br>
+      This is a calling — and it has your name on it.
+    </p>
+    <div class="scroll-hint">
+      <span>Continue</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- CALLING -->
+  <div class="section">
+    <div class="calling-section reveal">
+      <div class="section-label">A Message for You</div>
+      <div class="calling-title">To Our Beloved CYN,</div>
+      <div class="calling-body">
+        <p>
+          We believe that God does not call the equipped — He equips the called.
+          And today, we are reaching out to you because we see in you something
+          that goes beyond skills or experience: <strong>a heart that is willing, a faith that is growing,
+          and a spirit that belongs in this room.</strong>
+        </p>
+        <p>
+          We are building the team that will serve at <strong>Youth Summit 2026</strong>,
+          and we would be honored to have you as one of our Team Heads.
+          This is an invitation to step up, to lead, and to serve your generation
+          in a way that will leave a mark for eternity.
+        </p>
+        <p>
+          Before anything else — pray about it. Ask the Lord.
+          And when you feel that nudge in your heart, know that we will be right here,
+          ready to walk this journey with you.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BIBLE VERSE -->
+  <section class="verse-section reveal">
+    <div class="section-label">A Word for the Season</div>
+    <div class="verse-text">
+      "For we are God's handiwork, created in Christ Jesus to do good works,
+      which God prepared in advance for us to do."
+    </div>
+    <div class="verse-ref">Ephesians 2:10</div>
+  </section>
+
+  <!-- WHAT AWAITS -->
+  <div class="section reveal">
+    <div class="section-label">What Awaits You</div>
+    <div style="font-family:'Cinzel',serif; font-size: clamp(18px,3vw,26px); font-weight:600; margin-bottom:8px;">Youth Summit 2026</div>
+    <div style="font-size:14px; color:var(--text-muted); line-height:1.8; margin-bottom:4px; font-style:italic;">[Theme Placeholder — Coming Soon]</div>
+    <div class="cards-grid" style="margin-top:32px;">
+      <div class="info-card">
+        <div class="icon">🕊️</div>
+        <div class="card-title">Spiritual Growth</div>
+        <div class="card-text">Lead your team as a spiritual example and watch God move through your obedience.</div>
+      </div>
+      <div class="info-card">
+        <div class="icon">🤝</div>
+        <div class="card-title">Community</div>
+        <div class="card-text">Build deep, lasting friendships with fellow Gen Z believers across CYN SEE.</div>
+      </div>
+      <div class="info-card">
+        <div class="icon">⚡</div>
+        <div class="card-title">Impact</div>
+        <div class="card-text">Your contribution will directly shape the experience of every young person at the Summit.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLOSING -->
+  <section class="closing reveal">
+    <div class="divider" style="margin-bottom:40px;"></div>
+    <div class="closing-title">Will You Answer the Call?</div>
+    <p class="closing-body">
+      Take a moment. Pray. Talk to someone you trust.
+      And when you're ready, reach out — we would love to hear from you.
+      God bless you, and we hope to serve alongside you.
+    </p>
+    <div class="sig-block">
+      With faith and expectation,<br>
+      <span class="sig-name">Pas. Israel Masangcay</span><br>
+      JILSEEO Youth Coordinator<br><br>
+      <span class="sig-name">Bro. Christian Mitra</span><br>
+      JILSEEO Youth Summit 2026 Assistant
+    </div>
+  </section>
+
+  <div class="footer-line">CYN SEE · JILSEEO · Youth Summit 2026 · All for His Glory</div>
+
+</div>
+
+<script>
+  // Generate stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      top: ${Math.random() * 100}%;
+      left: ${Math.random() * 100}%;
+      --d: ${2 + Math.random() * 4}s;
+      animation-delay: ${Math.random() * 4}s;
+      opacity: ${Math.random() * 0.5 + 0.1};
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // Open message
+  function openMessage() {
+    document.getElementById('intro').classList.add('hidden');
+    const main = document.getElementById('main');
+    main.classList.add('visible');
+    setTimeout(initReveal, 600);
+  }
+
+  // Scroll reveal
+  function initReveal() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  }
+</script>
+</body>
+</html>
